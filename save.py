@@ -20,9 +20,9 @@ def calcMoney(date, amount=1000):
     year = today[0]
     month = today[1]
     day = today[2]
-    tDay = str(year - 5) + str(month) + str(day)
+    tDay = str(year - 5) + str(month) + str(day)    #取得5年前今天的日期
 
-    if date > tDay:
+    if date > tDay: #如这个日期在传入日期之前，则说明该笔存款还未到期，直接返回本金金额
         return amount
     else:
         sum = round(amount * (1 + getRate(date) * 5 / 100), 2)  # 计算5年后到期本息合计
@@ -34,7 +34,7 @@ def calcMoney(date, amount=1000):
 
 
 # 利率表,key为利率生效日期，value为利率
-# 注意：本利率表采集自中国银行网站
+# 注意：本利率表采集自中国银行网站,各商业银行执行利率在人民银行指导利率上下浮动，并不完全相同
 rate = {
     '20151024': 2.75,
     '20150826': 3.05,
@@ -146,7 +146,7 @@ tDay = str(year - years) + str(month) + str(day)  # 需要缴存的日期的文�
 while (tDay > THEDATE):  # 如果日期大于教育金起存日期，则要检查当月是否已经缴存，和是否有退款
     tMonth = str(year - years) + str(month)  # 取得月份
     itamount = 1000
-    if tMonth > '201812':  # 如果月份为2019年以后，那么补缴金额基数为2000
+    if tMonth > '201810':  # 如果月份为201811以后，也就是在教育储蓄满10年后，开始存2000
         itamount = 2000
     if tMonth not in saveMonth:  # 如果没存，那么提示
         s = calcMoney(tDay, itamount)
