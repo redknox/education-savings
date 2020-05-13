@@ -15,21 +15,30 @@ THEDATE = '20081124'
 # 返回:float 自动转存记复利的本息合计账面余额。（注：未包含本期的活期利息）
 ####
 
-def calcMoney(date, amount=1000):
-    today = time.localtime(time.time())
-    year = today[0]
-    month = today[1]
-    day = today[2]
+def calcMoney(date, amount=1000, cDate='19880101'):
+    if cDate == '19880101':
+        today = time.localtime(time.time())
+        year = today[0]
+        month = today[1]
+        day = today[2]
 
-    txtYear = str(year)
-    txtMonth = str(month)
-    txtDay = str(day)
+        txtYear = str(year)
+        txtMonth = str(month)
+        txtDay = str(day)
 
-    if month < 10:
-        txtMonth = '0' + txtMonth
+        if month < 10:
+            txtMonth = '0' + txtMonth
 
-    if day < 10:
-        txtDay = '0' + txtDay
+        if day < 10:
+            txtDay = '0' + txtDay
+    else:
+        year = int(cDate[0:4])
+        month = int(cDate[4:6])
+        day = int(cDate[-2])
+
+        txtYear = cDate[0:4]
+        txtMonth = cDate[4:6]
+        txtDay = cDate[6:8]
 
     tDay = str(year - 5) + txtMonth + txtDay  # 取得5年前今天的日期
 
@@ -105,11 +114,22 @@ saveMonth = {
     '201408',
     '201410',
     '201412',
+    '201501',
+    '201502',
+    '201503',
     '201504',
+    '201505',
     '201507',
     '201509',
     '201811',
-    '201812'
+    '201812',
+    '201911',
+    '201912',
+    '202001',
+    '202002',
+    '202003',
+    '202004',
+    '202005'
 }
 
 # 表内月份补存了之前的教育金，为了确保每月有定存到期，将这些补缴取出
@@ -148,35 +168,45 @@ year = today[0]
 month = today[1]
 day = today[2]
 
-txtYear = str(year)
-txtMonth = str(month)
-txtDay = str(day)
+year = 2020
+month = 4
+day = 10
 
-if month < 10:
-    txtMonth = '0' + txtMonth
+for year in range(2020, 2028):
+    for month in range(1, 13):
+        print('===================================================')
 
-if day < 10:
-    txtDay = '0' + txtDay
+        txtYear = str(year)
+        txtMonth = str(month)
+        txtDay = str(day)
 
-totalAmount = 2000  # 本月缴纳总数
+        if month < 10:
+            txtMonth = '0' + txtMonth
 
-print("今天是", txtYear, "年", txtMonth, "月", txtDay, '日,记得给豆子宝存', totalAmount, '米教育基金哦！')
+        if day < 10:
+            txtDay = '0' + txtDay
 
-years = 5  # 存期为5年期
-tDay = str(year - years) + txtMonth + txtDay  # 需要缴存的日期的文本日期
-while (tDay > THEDATE):  # 如果日期大于教育金起存日期，则要检查当月是否已经缴存，和是否有退款
-    tMonth = str(year - years) + txtMonth  # 取得月份
-    itamount = 1000
-    if tMonth > '201810':  # 如果月份为201811以后，也就是在教育储蓄满10年后，开始存2000
-        itamount = 2000
-    if tMonth not in saveMonth:  # 如果没存，那么提示
-        s = calcMoney(tDay, itamount)
-        print(years, "年前的", month, "月你没有给豆子宝存钱，今天要存", s, "元补上！")
-        totalAmount += s
+        txtDate = txtYear + txtMonth + txtDay
 
-    if tMonth in payBack:  # 如果本月有退款，则提示
-        print(years, "年前的本月你为豆子宝补存了教育基金，可以拿出来", payBack[tMonth], "！")
+        totalAmount = 2000  # 本月缴纳总数
 
-    years += 5
-    tDay = str(year - years) + txtMonth + txtDay
-print("合计：", totalAmount, "元。")
+        print("今天是", txtYear, "年", txtMonth, "月", txtDay, '日,记得给豆子宝存', totalAmount, '米教育基金哦！')
+
+        years = 5  # 存期为5年期
+        tDay = str(year - years) + txtMonth + txtDay  # 需要缴存的日期的文本日期
+        while (tDay > THEDATE):  # 如果日期大于教育金起存日期，则要检查当月是否已经缴存，和是否有退款
+            tMonth = str(year - years) + txtMonth  # 取得月份
+            itamount = 1000
+            if tMonth > '201810':  # 如果月份为201811以后，也就是在教育储蓄满10年后，开始存2000
+                itamount = 2000
+            if tMonth not in saveMonth:  # 如果没存，那么提示
+                s = calcMoney(tDay, itamount, txtDate)
+                print(years, "年前的", month, "月你没有给豆子宝存钱，今天要存", s, "元补上！")
+                totalAmount += s
+
+            if tMonth in payBack:  # 如果本月有退款，则提示
+                print(years, "年前的本月你为豆子宝补存了教育基金，可以拿出来", payBack[tMonth], "！")
+
+            years += 5
+            tDay = str(year - years) + txtMonth + txtDay
+        print("合计：", totalAmount, "元。")
